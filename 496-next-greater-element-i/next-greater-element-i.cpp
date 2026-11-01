@@ -1,28 +1,38 @@
-//Brute Force
 class Solution {
 public:
     vector<int> nextGreaterElement(vector<int>& nums1,
                                    vector<int>& nums2) {
-        int n = nums1.size();
-        int m = nums2.size();
 
-        vector<int> ans(n, -1);
+        stack<int> st;
+        unordered_map<int, int> mp;
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
+        int n = nums2.size();
 
-                if (nums1[i] == nums2[j]) {
+        // Traverse nums2 from right to left
+        for(int i = n-1; i >= 0; i--){
 
-                    for (int k = j + 1; k < m; k++) {
-                        if (nums2[k] > nums2[j]) {
-                            ans[i] = nums2[k];
-                            break;
-                        }
-                    }
-
-                    break;
-                }
+            // Pop smaller or equal elements
+            while(!st.empty() && st.top() <= nums2[i]){
+                st.pop();
             }
+
+            // Store NGE
+            if(st.empty()){
+                mp[nums2[i]] = -1;
+            }
+            else{
+                mp[nums2[i]] = st.top();
+            }
+
+            // Push current element
+            st.push(nums2[i]);
+        }
+
+        // Build answer for nums1
+        vector<int> ans;
+
+        for(int i = 0; i < nums1.size(); i++){
+            ans.push_back(mp[nums1[i]]);
         }
 
         return ans;
